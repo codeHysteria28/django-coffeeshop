@@ -30,6 +30,8 @@ from .forms import *
 from .serializers import *
 from .permissions import *
 
+import re
+
 ##########################################################
 # Helpers
 
@@ -288,10 +290,8 @@ def contact(request):
     if ('message' not in request.POST or len(request.POST['message']) == 0):
         error_msg = 'No message given.'
     if (error_msg == ''):
-        body = request.POST['message']
-        cmd = ' printf "From: ' + request.user.email + \
-            '\nSubject: CoffeeShop User Contact\n\n' + body + \
-            '" | ssmtp contact@coffeeshop.com'
+        body = re.sub(r'[^\w\s.,!?]', '', request.POST['message'])
+        cmd = f"From: [request.user.email]\nSubject: CoffeeShop User Contact\n\n[body]"
         log.info("Command: " + cmd)
         os.system(cmd)
         context = {'cart_size': cart_size}
