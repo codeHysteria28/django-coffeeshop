@@ -32,6 +32,7 @@ from .permissions import *
 
 import re
 
+from django.views.decorators.csrf import csrf_protect
 ##########################################################
 # Helpers
 
@@ -382,7 +383,7 @@ def delcomment(request):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-@csrf_exempt  # this is a bad idea - it is to demonstrate a vulnerability only
+@csrf_protect
 def changeemail(request):
     log = logging.getLogger('django')
     cart_size = get_cart_size(request.user)
