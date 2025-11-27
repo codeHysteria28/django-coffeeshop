@@ -25,7 +25,6 @@ def index(request):
 
 
 @require_http_methods(["GET"])
-@csrf_exempt
 def youhavewon(request):
 
     context = {}
@@ -35,7 +34,6 @@ def youhavewon(request):
 # defaulting SameSite to None and requiring Secure.  For these browsers, the above
 # view will not work.
 @require_http_methods(["GET"])
-@csrf_exempt
 def youhavewonssl(request):
 
     context = {}
@@ -74,7 +72,6 @@ def credtest(request):
 
 
 @require_http_methods(["POST"])
-@csrf_exempt
 def posttest(request):
     try:
         json_data = json.loads(request.body)

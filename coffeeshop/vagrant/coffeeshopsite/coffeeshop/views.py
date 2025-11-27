@@ -306,7 +306,6 @@ def contact(request):
 # SQL injection vulnerabilities.
 # Don't use it in real applications
 @require_http_methods(["POST"])
-@csrf_exempt
 def search(request):
     log = logging.getLogger('django')
 
@@ -423,7 +422,6 @@ def changeemail(request):
 
 # Returns the CSRF token as a JSON string
 @require_http_methods(["GET", "HEAD"])
-@csrf_exempt
 def getcsrftoken(request):
     return JsonResponse({'csrftoken':
                          django.middleware.csrf.get_token(request)})
@@ -439,7 +437,6 @@ def testcsrftoken(request):
 
 
 # CSP report handler - send as email
-@csrf_exempt
 def email_csp_report(request):
     log = logging.getLogger('django')
     json_str = request.body
@@ -464,7 +461,6 @@ def email_csp_report(request):
 # Don't use it as a template for productive code - it contains
 # other vulnerabilities besides Billion Laughs
 @require_http_methods(["POST"])
-@csrf_exempt
 def stocklevel(request):
     root = ET.fromstring(request.body)
     if (root.tag != 'product'):

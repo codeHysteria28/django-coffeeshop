@@ -20,3 +20,4 @@
 **/*.key
 **/*.pub
 **/*.ipynb
+snyk_vulns.txt

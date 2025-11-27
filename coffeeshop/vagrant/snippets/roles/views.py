@@ -293,12 +293,13 @@ def search(request):
         with connection.cursor() as cursor:
             sql = '''SELECT id, name, description, unit_price 
                        FROM coffeeshop_product
-                      WHERE (LOWER(name) like '%{}%' or LOWER(description) like '%{}%')
-                  '''.format(search_text.lower(), search_text.lower())
+                      WHERE (LOWER(name) like %s or LOWER(description) like %s)
+                  '''
+            search_param = '%' + search_text.lower() + '%'
             print(sql)
             products = []
             try:
-                cursor.execute(sql)
+                cursor.execute(sql, [search_param, search_param])
                 for row in cursor.fetchall():
                     (pk, name, description, unit_price) = row
                     product = Product(id=pk, name=name, description=description, 
@@ -352,7 +353,6 @@ def delcomment(request):
 
 @login_required
 @require_http_methods(["GET", "POST"])
-@csrf_exempt # this is a bad idea - we have it to demonstrate a vulnerability only
 def changeemail(request):
     cart_size = get_cart_size(request.user)
     print("Change email")
@@ -393,7 +393,6 @@ def changeemail(request):
 
 # Returns the CSRF token as a JSON string
 @require_http_methods(["GET", "HEAD"])
-@csrf_exempt
 def getcsrftoken(request):
     return JsonResponse({'csrftoken': django.middleware.csrf.get_token(request)})
 
@@ -404,7 +403,6 @@ def testcsrftoken(request):
     return JsonResponse({'status': 'ok', 'received': csrftoken, 'correct': django.middleware.csrf.get_token(request)})
 
 # CSP report handler - send as email
-@csrf_exempt
 def email_csp_report(request):
     json_str = request.body
     print(json_str)
@@ -426,7 +424,6 @@ def email_csp_report(request):
 # Don't use it as a template for productive code - it contains
 # other vulnerabilities besides Billion Laughs
 @require_http_methods(["POST"])
-@csrf_exempt
 def stocklevel(request):
     root = ET.fromstring(request.body)
     if (root.tag != 'product'):
